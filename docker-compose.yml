@@ -100,7 +100,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile.dev
     container_name: myapp_celery_worker
-    command: celery -A config worker -l info -Q high_priority,default,low_priority
+    command: celery -A config worker -l info -Q high_priority,default,low_priority,reports,maintenance
     volumes:
       - ./backend:/app
     environment:

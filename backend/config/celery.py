@@ -52,9 +52,15 @@ app.conf.task_routes = {
         'queue': 'low_priority',
         'routing_key': 'low.priority',
     },
-    'apps.reports.tasks.*': {
-        'queue': 'low_priority',
-        'routing_key': 'low.priority',
+
+    # Report tasks with priority-based routing
+    'apps.reports.tasks.generate_report': {
+        'queue': 'reports',  # Dedicated queue for report generation
+        'routing_key': 'reports.generate',
+    },
+    'apps.reports.tasks.cleanup_expired_reports': {
+        'queue': 'maintenance',
+        'routing_key': 'maintenance.cleanup',
     },
 }
 
@@ -99,11 +105,11 @@ app.conf.beat_schedule = {
         'task': 'apps.core.tasks.cleanup_sessions',
         'schedule': 3600.0,  # Every hour
     },
-    'generate-daily-reports': {
-        'task': 'apps.reports.tasks.generate_daily_report',
+    'cleanup-expired-reports': {
+        'task': 'apps.reports.tasks.cleanup_expired_reports',
         'schedule': 86400.0,  # Every day
         'options': {
-            'queue': 'low_priority',
+            'queue': 'maintenance',
         },
     },
 }
